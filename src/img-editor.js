@@ -135,14 +135,11 @@ angular.module('imgManipulation.directives', [])
             y: p1.y,
             x2: p2.x,
             y2: p2.y
-          }; //save the crop in origin cords
-          console.log(crop);
-          console.log(scope.crop);
+          }; 
           //turn off jcrop
           jcrop_api.destroy();
           //apply the crop (requires canvas support)
           applyCrop(crop);
-          //TODO Convert Crop to Orig Cords.
         }
       });
 
@@ -174,7 +171,6 @@ angular.module('imgManipulation.directives', [])
       }
 
       function doRotate() {
-
         var img = new Image();
         img.onload = function() {
           var myImage;
@@ -302,9 +298,9 @@ angular.module('imgManipulation.directives', [])
         $(element).css('height', selected.h + 'px');
         scope.$broadcast('update', canvas.toDataURL());
         cropImage = canvas = ctx = cw = ch = selected = ctx1 = ctx2 = canvas1 = canvas2 = rectBB = offX = offY = null;
-      } // end crop using canvas.
-      //helper functions
+      }
 
+      //helper functions
       function rotatePoint(pointX, pointY, width, height, angle) {
         if (angle === 0) {
           return {
