@@ -67,7 +67,7 @@
 
                       </div>
                        <img img-data-from-uri="{{item.url}}"
-                      img-editable="" crop="item.crop" rotation="item.rotation">
+                      img-editable="" style="max-width:560px" crop="item.crop" rotation="item.rotation">
                     </div>
                   </td>
                   <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
@@ -106,7 +106,7 @@
                         <button class="btn btn-primary btn-xs" ng-click="$broadcast('cancel','');">Cancel</button>
 
                       </div>
-                      <img img-data="item.file" img-editable crop="item.file.crop" rotation="item.file.rotation"/>
+                      <img img-data="item.file" img-editable style="max-width:560px" crop="item.file.crop" rotation="item.file.rotation"/>
                     </div>
                   </td>
                   <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>

@@ -167,6 +167,8 @@ serve images from the same domain as the user is on. */
                 scope.model = {};
                 scope.model.crop = $parse(attributes.crop);
                 scope.model.rotation = $parse(attributes.rotation);
+                scope.model.trueSize= $parse(attributes.trueSize);
+
                 if (!scope.crop) {
                     scope.crop = false;
                 }
@@ -192,6 +194,7 @@ serve images from the same domain as the user is on. */
                     element.attr('src', fullSize.src);
 
                     //Init Jcrop with old selection if one exists
+                    console.log([fullSize.width,fullSize.height]);
                     if (scope.crop) {
                         var pt1 = rotatePoint(scope.crop.x, scope.crop.y,
                             orig.width, orig.height, scope.rotation);
@@ -199,12 +202,15 @@ serve images from the same domain as the user is on. */
                             orig.width, orig.height, scope.rotation);
                         var selectedInit = [pt1.x, pt1.y, pt2.x, pt2.y];
                         $(element).Jcrop({
-                            setSelect: selectedInit
+                            'trueSize': [fullSize.width,fullSize.height],
+                            'setSelect': selectedInit
                         }, function () {
                             jcrop_api = this;
                         });
                     } else {
-                        $(element).Jcrop({}, function () {
+                        $(element).Jcrop({
+                            'trueSize': [fullSize.width,fullSize.height],
+                        }, function () {
                             jcrop_api = this;
                         });
                     }
@@ -225,6 +231,7 @@ serve images from the same domain as the user is on. */
                         scope.cropping = false;
                         //Save the new crop to the scope
                         var crop = jcrop_api.tellSelect();
+
                         var p1 = rotatePoint(crop.x, crop.y,
                             fullSize.width, fullSize.height, -scope.rotation);
                         var p2 = rotatePoint(crop.x2, crop.y2,
@@ -253,8 +260,8 @@ serve images from the same domain as the user is on. */
                     if (scope.cropping) {
                         scope.cropping = false;
                         element.attr('src', croppedImage.src);
-                        // $(element).css('width', croppedImage.width + 'px');
-                        // $(element).css('height', croppedImage.height + 'px');
+                        $(element).css('width', '');
+                        $(element).css('height', '');
                         croppedImage = null;
                         jcrop_api.destroy();
                     }
