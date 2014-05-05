@@ -49,8 +49,8 @@
                 <tr ng-repeat="item in uploads">
                   <td>
                     <strong>{{ item.name }}</strong> 
-                    <div ng-show="uploader.isHTML5"><img img-thumb style="height:100px;"  /> </div>
-                    <button type="button" class="btn btn-primary btn-xs" ng-click="item.editing=!item.editing">Edit Image {{item.sequenceNumber}}</button>
+                    <div ng-show="uploader.isHTML5"><img img-thumb style="height:100px;" src="http://placehold.it/100x100"  /> </div>
+                    <button type="button" class="btn btn-primary btn-xs" ng-click="item.editing=!item.editing" ng-show="loaded">Edit Image {{item.sequenceNumber}}</button>
                     <!-- Edit Mode -->
                     <div ng-show="item.editing">
                       <h2>Edit Image</h2>

@@ -53,11 +53,12 @@ serve images from the same domain as the user is on. */
                     loadedImgData.src = dataURL;
                     // $(element).css('width', img.width + 'px');
                     // $(element).css('height', img.height + 'px');
-                    if (scope.model.crop(scope)) {
+                    var crop = scope.model.crop(scope) ;
+                    if ( crop && crop.length > 0) {
                         //apply the crop programatically pre-load
                         var cropImage = new Image();
                         cropImage.src = dataURL;
-                        var selected = scope.model.crop(scope);
+                        var selected = crop;
                         selected.w = selected.x2 - selected.x;
                         selected.h = selected.y2 - selected.y;
                         cw = canvas.width;
