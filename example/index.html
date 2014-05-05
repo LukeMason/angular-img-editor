@@ -17,7 +17,7 @@
 
   <!-- Drag and Drop Uploader and List of Images-->
   <div class="container-fluid">
-    <h2>Upload Your Images</h2>	
+    <h2>Upload Your Images</h2> 
     <div class="row">
       <div class="col-md-12">
         <div ng-show="uploader.isHTML5">
@@ -40,26 +40,22 @@
                   <th width="50%">Name</th>
                   <th ng-show="uploader.isHTML5">Size</th>
                   <th ng-show="uploader.isHTML5">Progress</th>
-                  <th>Status</th>
+                  <th>progress</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="item in uploader.queue">
+                <!-- image which was already uploaded from a past session --> 
+                <tr ng-repeat="item in uploads">
                   <td>
-                    <strong>{{ item.file.name }}</strong> 
+                    <pre>{{item | json}}</pre>
+                    <strong>{{ item.name }}</strong> 
                     <div ng-show="uploader.isHTML5"><img img-thumb style="height:100px;"  /> </div>
                     <button type="button" class="btn btn-primary btn-xs" ng-click="item.editing=!item.editing">Edit Image {{item.sequenceNumber}}</button>
-                    <div ng-repeat="field in mediaset.mediaSetFormFields">
-                      <div class="form-group">
-                        <label>{{field.fieldName}}</label>
-                        <input type="{{field.fieldType}}" class="form-control">
-                      </div>
-                    </div>
                     <!-- Edit Mode -->
                     <div ng-show="item.editing">
                       <h2>Edit Image</h2>
-                      <a href="#" ng-click="item.editing=!item.editing">Return to List of Images</a>
+                      <a href="#" ng-click="item.editing=!item.editing">Close Edit</a>
                       <br>
                       <div class="editBar" ng-show="!cropping && !rotating">
                         <button class="btn btn-primary btn-xs" ng-click="$broadcast('crop','');">Crop</button>
@@ -71,8 +67,48 @@
                         <button class="btn btn-primary btn-xs" ng-click="$broadcast('cancel','');">Cancel</button>
 
                       </div>
-                      <img img-data="item.file" img-editable />
+                       <img img-data-from-uri="{{item.url}}"
+                      img-editable="" crop="item.crop" rotation="item.rotation">
+                    </div>
+                  </td>
+                  <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                  <td ng-show="uploader.isHTML5">
+                    <div class="progress" style="margin-bottom: 0;">
+                      <div class="progress-bar" role="progressbar" style="width:100%"></div>
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    <span ><i class="glyphicon glyphicon-ok"></i></span>
+                  </td>
+                  <td nowrap>
+                    <button type="button" class="btn btn-danger btn-xs" disabled>
+                      <span class="glyphicon glyphicon-trash"></span> Remove
+                    </button>
+                  </td>
+                </tr>
+                <!-- new uploads -->
+                <tr ng-repeat="item in uploader.queue">
+                  <td>
+                    <pre>{{item.file | json}}</pre>
+                    <strong>{{ item.file.name }}</strong> 
+                    <div ng-show="uploader.isHTML5"><img img-thumb style="height:100px;"  /> </div>
+                    <button type="button" class="btn btn-primary btn-xs" ng-click="item.editing=!item.editing">Edit Image {{item.sequenceNumber}}</button>
+                    <!-- Edit Mode -->
+                    <div ng-show="item.editing">
+                      <h2>Edit Image</h2>
+                      <a href="#" ng-click="item.editing=!item.editing">Close Edit</a>
+                      <br>
+                      <div class="editBar" ng-show="!cropping && !rotating">
+                        <button class="btn btn-primary btn-xs" ng-click="$broadcast('crop','');">Crop</button>
+                        <button class="btn btn-primary btn-xs" ng-click="$broadcast('rotate','');">Rotate</button>
+                        <button class="btn btn-primary btn-xs" ng-click="$broadcast('reset','');">Restore</button>
+                      </div>
+                      <div class="saveBar" ng-hide="!cropping && !rotating">
+                        <button class="btn btn-primary btn-xs" ng-click="$broadcast('save','');">Save</button>
+                        <button class="btn btn-primary btn-xs" ng-click="$broadcast('cancel','');">Cancel</button>
 
+                      </div>
+                      <img img-data="item.file" img-editable crop="item.file.crop" rotation="item.file.rotation"/>
                     </div>
                   </td>
                   <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>

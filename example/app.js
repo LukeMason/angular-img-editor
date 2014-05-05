@@ -1,4 +1,4 @@
-// 'use strict';
+ 'use strict';
 // Declare app level module which depends on filters, and services
 angular.module('myApp', [
   'myApp.directives',
@@ -8,7 +8,11 @@ angular.module('myApp', [
 
 angular.module('myApp.controllers', ['angularFileUpload'])
   .controller('myController', function($scope, $fileUploader, $http, $sce) {
-
+    $scope.uploads=[{
+      'url':'https://scontent-a-iad.xx.fbcdn.net/hphotos-prn2/t1.0-9/1151081_10201852161326618_2087299939_n.jpg',
+      'name':'test img',
+      'crop': {x: 0, y: 76, x2: 747, y2: 295}
+    }];
     /* BEGIN: angular file uploader controller*/
     // Creates a uploader
     var uploader = $scope.uploader = $fileUploader.create({
