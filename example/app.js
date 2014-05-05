@@ -8,11 +8,38 @@ angular.module('myApp', [
 
 angular.module('myApp.controllers', ['angularFileUpload'])
   .controller('myController', function($scope, $fileUploader, $http, $sce) {
-    $scope.uploads=[{
+    $scope.uploads=[
+    {
       'url':'https://scontent-a-iad.xx.fbcdn.net/hphotos-prn2/t1.0-9/1151081_10201852161326618_2087299939_n.jpg',
-      'name':'test img',
-      'crop': {x: 0, y: 76, x2: 747, y2: 295}
-    }];
+      'name':'Test From Server',
+    },
+    {
+      'url':'https://scontent-b-iad.xx.fbcdn.net/hphotos-frc3/t31.0-8/416754_3799985799085_1769166011_o.jpg',
+      'name':'Test Crop',
+      'crop': {
+        'x': 0, 
+        'y': 286, 
+        'x2': 2046, 
+        'y2': 971
+      }
+    },
+    {
+      'url':'https://fbcdn-sphotos-a-a.akamaihd.net/hphotos-ak-ash3/t1.0-9/221754_2045126368696_101105_n.jpg',
+      'name':'Test Rotate',
+      'rotation': 180
+    },
+    {
+      'url':'https://fbcdn-sphotos-a-a.akamaihd.net/hphotos-ak-ash2/t31.0-8/738229_10200191249604863_465734781_o.jpg',
+      'name':'Test Crop and Rotate',
+      'crop': {
+        'x': 400,
+        'y': 9,
+        'x2': 821,
+        'y2': 667
+    },
+    'rotation': 90
+    },
+    ];
     /* BEGIN: angular file uploader controller*/
     // Creates a uploader
     var uploader = $scope.uploader = $fileUploader.create({
@@ -31,7 +58,6 @@ angular.module('myApp.controllers', ['angularFileUpload'])
 
 
     // REGISTER HANDLERS
-
     uploader.bind('afteraddingfile', function(event, item) {
       console.info('After adding a file', item);
     });

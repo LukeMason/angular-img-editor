@@ -48,7 +48,6 @@
                 <!-- image which was already uploaded from a past session --> 
                 <tr ng-repeat="item in uploads">
                   <td>
-                    <pre>{{item | json}}</pre>
                     <strong>{{ item.name }}</strong> 
                     <div ng-show="uploader.isHTML5"><img img-thumb style="height:100px;"  /> </div>
                     <button type="button" class="btn btn-primary btn-xs" ng-click="item.editing=!item.editing">Edit Image {{item.sequenceNumber}}</button>
@@ -89,7 +88,6 @@
                 <!-- new uploads -->
                 <tr ng-repeat="item in uploader.queue">
                   <td>
-                    <pre>{{item.file | json}}</pre>
                     <strong>{{ item.file.name }}</strong> 
                     <div ng-show="uploader.isHTML5"><img img-thumb style="height:100px;"  /> </div>
                     <button type="button" class="btn btn-primary btn-xs" ng-click="item.editing=!item.editing">Edit Image {{item.sequenceNumber}}</button>
