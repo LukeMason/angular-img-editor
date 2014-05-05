@@ -75,7 +75,7 @@ angular.module('imgEditor.directives', [])
     }
   ])
 /* add listeners for 'crop', 'rotate' and 'rest' brodcasts */
-.directive('imgEditable', function() {
+.directive('imgEditable', function( $parse ) {
   return {
     restrict: 'A',
     link: function(scope, element, attributes) {
@@ -83,8 +83,15 @@ angular.module('imgEditor.directives', [])
       var croppedImage; //this will be used to support cancel of crop.
       var fullSize = new Image();
       var orig = new Image();
-      scope.crop = false;
-      scope.rotation = 0;
+      var model = {};
+      model.crop = $parse(attributes.crop); 
+      model.rotation = $parse(attributes.rotation); 
+      if(!scope.crop){
+        scope.crop = false;
+      }
+      if(!scope.rotation) {
+        scope.rotation = 0;
+      }
       if(element.attr('src') && element.attr('src').length > 1) { 
         fullSize.src = element.attr('src'); 
       } //load the src if it was already on the dom
@@ -141,14 +148,15 @@ angular.module('imgEditor.directives', [])
             y: p1.y,
             x2: p2.x,
             y2: p2.y
-          }; //save the crop in origin cords
-          console.log(crop);
-          console.log(scope.crop);
+          }; 
+          //save the crop in origin cords
+          model.crop.assign(scope,scope.crop);
+
+
           //turn off jcrop
           jcrop_api.destroy();
           //apply the crop (requires canvas support)
           applyCrop(crop);
-          //TODO Convert Crop to Orig Cords.
         }
       });
 
@@ -167,6 +175,8 @@ angular.module('imgEditor.directives', [])
       //rotate
       scope.$on('rotate', function() {
         scope.rotation = (scope.rotation + 90) % 360;
+        //update the model
+        model.rotation.assign(scope,scope.rotation);
         doRotate();
       });
 
