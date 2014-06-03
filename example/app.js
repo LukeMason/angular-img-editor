@@ -42,7 +42,7 @@
          // Creates a uploader
          var uploader = $scope.uploader = $fileUploader.create({
              scope: $scope,
-             url: 'test-upload.php'
+             url: 'http://lukemason.co/sandbox/angular-img-editor/example/test-upload.php'
          });
          //overide the default uploader's file post to post the base 64 data
          uploader.uploadItem = function(value) {
@@ -50,7 +50,8 @@
              var item = this.queue[index];
              item.index = item.index || this._nextIndex++;
              item.isReady = true;
-
+             var filename = item.file.name.split('.');
+             filename.pop();
              if (this.isUploading) return;
 
              this.isUploading = true;
@@ -61,7 +62,7 @@
                  transformRequest: transformRequestAsFormPost,
                  data: {
                      base64: item.base64,
-                     name: item.file.name.split('.').pop()
+                     name: filename
                  }
              }).success(function(data, status, headers, config) {
                  // this callback will be called asynchronously
