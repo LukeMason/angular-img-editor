@@ -3,12 +3,11 @@
  angular.module('myApp', [
      'myApp.directives',
      'myApp.controllers',
-     'myApp.services',
      'imgEditor.directives'
  ]);
 
  angular.module('myApp.controllers', ['angularFileUpload'])
-     .controller('myController', function($scope, $fileUploader, $http, $sce, transformRequestAsFormPost) {
+     .controller('myController', function($scope, $fileUploader, $http, $sce) {
          $scope.uploads = [{
              'url': 'https://scontent-a-iad.xx.fbcdn.net/hphotos-prn2/t1.0-9/1151081_10201852161326618_2087299939_n.jpg',
              'name': 'Test From Server',
@@ -42,7 +41,7 @@
          // Creates a uploader
          var uploader = $scope.uploader = $fileUploader.create({
              scope: $scope,
-             url: 'http://lukemason.co/sandbox/angular-img-editor/example/test-upload.php'
+             url: 'test-upload.php'
          });
          //overide the default uploader's file post to post the base 64 data
          uploader.uploadItem = function(value) {
@@ -52,17 +51,18 @@
              item.isReady = true;
              var filename = item.file.name.split('.');
              filename.pop();
+             filename = filename.join('.');
              if (this.isUploading) return;
 
              this.isUploading = true;
              var that = this;
              $http({
-                 method: "post",
+                 method: 'POST',
                  url: item.url,
-                 transformRequest: transformRequestAsFormPost,
                  data: {
                      base64: item.base64,
-                     name: filename
+                     name: filename,
+                     type: item.file.type
                  }
              }).success(function(data, status, headers, config) {
                  // this callback will be called asynchronously
@@ -207,81 +207,3 @@
              };
          }
      ]);
-
-
- <!--http://www.bennadel.com/blog/2615-posting-form-data-with-http-in-angularjs.htm -->
- // I provide a request-transformation method that is used to prepare the outgoing
- // request as a FORM post instead of a JSON packet.
- angular.module('myApp.services', []).factory(
-     "transformRequestAsFormPost",
-     function() {
-
-         // I prepare the request data for the form post.
-         function transformRequest(data, getHeaders) {
-
-             var headers = getHeaders();
-
-             headers["Content-type"] = "application/x-www-form-urlencoded; charset=utf-8";
-
-             return (serializeData(data));
-
-         }
-
-
-         // Return the factory value.
-         return (transformRequest);
-
-
-         // ---
-         // PRVIATE METHODS.
-         // ---
-
-
-         // I serialize the given Object into a key-value pair string. This
-         // method expects an object and will default to the toString() method.
-         // --
-         // NOTE: This is an atered version of the jQuery.param() method which
-         // will serialize a data collection for Form posting.
-         // --
-         // https://github.com/jquery/jquery/blob/master/src/serialize.js#L45
-         function serializeData(data) {
-
-             // If this is not an object, defer to native stringification.
-             if (!angular.isObject(data)) {
-
-                 return ((data == null) ? "" : data.toString());
-
-             }
-
-             var buffer = [];
-
-             // Serialize each key in the object.
-             for (var name in data) {
-
-                 if (!data.hasOwnProperty(name)) {
-
-                     continue;
-
-                 }
-
-                 var value = data[name];
-
-                 buffer.push(
-                     encodeURIComponent(name) +
-                     "=" +
-                     encodeURIComponent((value == null) ? "" : value)
-                 );
-
-             }
-
-             // Serialize the buffer and clean it up for transportation.
-             var source = buffer
-                 .join("&")
-                 .replace(/%20/g, "+");
-
-             return (source);
-
-         }
-
-     }
- );
