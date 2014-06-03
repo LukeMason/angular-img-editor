@@ -46,11 +46,12 @@
               </thead>
               <tbody>
                 <!-- image which was already uploaded from a past session --> 
+                <h5>Store original image and edits to allow additional edits</h5>
                 <tr ng-repeat="item in uploads">
                   <td>
                     <strong>{{ item.name }}</strong> 
-                    <div ng-show="uploader.isHTML5"><img img-thumb style="height:100px;" src="http://placehold.it/100x100"  /> </div>
-                    <button type="button" class="btn btn-primary btn-xs" ng-click="item.editing=!item.editing" ng-show="loaded">Edit Image {{item.sequenceNumber}}</button>
+                    <div ng-show="uploader.isHTML5"><img img-thumb style="height:100px;" src="http://placehold.it/100x100" /> </div>
+                    <button type="button" class="btn btn-primary btn-xs" ng-click="item.editing=!item.editing">Edit Image </button>
                     <!-- Edit Mode -->
                     <div ng-show="item.editing">
                       <h2>Edit Image</h2>
@@ -66,8 +67,8 @@
                         <button class="btn btn-primary btn-xs" ng-click="$broadcast('cancel','');">Cancel</button>
 
                       </div>
-                       <img img-data-from-uri="{{item.url}}"
-                      img-editable="" style="max-width:560px" crop="item.crop" rotation="item.rotation">
+                      <img img-data-from-uri="{{item.url}}"
+                      img-editable="" style="max-width:560px" crop="item.crop" rotation="item.rotation" base64="item.base64">
                     </div>
                   </td>
                   <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
@@ -86,6 +87,9 @@
                   </td>
                 </tr>
                 <!-- new uploads -->
+                <tr><td>                
+                  <h5>Allow users to edit images before they are uploaded <span ng-show="uploader.queue.length < 1">(Upload images above)</span></h5>
+                </td></tr>
                 <tr ng-repeat="item in uploader.queue">
                   <td>
                     <strong>{{ item.file.name }}</strong> 
@@ -106,7 +110,7 @@
                         <button class="btn btn-primary btn-xs" ng-click="$broadcast('cancel','');">Cancel</button>
 
                       </div>
-                      <img img-data="item.file" img-editable style="max-width:560px" crop="item.file.crop" rotation="item.file.rotation"/>
+                      <img img-data="item.file" img-editable style="max-width:560px" crop="item.crop" rotation="item.rotation" base64="item.base64"/>
                     </div>
                   </td>
                   <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
@@ -137,6 +141,9 @@
         <button type="button" class="btn btn-danger btn-s" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
           <span class="glyphicon glyphicon-trash"></span> Remove all
         </button>
+        <button type="button" class="btn btn-success btn-s" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
+          <span class="glyphicon glyphicon-upload"></span> Upload all
+        </button>
       </div>
     </div>
   </div>
@@ -150,7 +157,7 @@
   <script src="//nervgh.github.io/pages/angular-file-upload/angular-file-upload.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-jcrop/0.9.12/js/jquery.Jcrop.js"></script>
   <script src="app.js"></script>
-  <script src="angular-imgEditor.js"></script>
+  <script src="../src/angular-imgEditor.js"></script>
 </body>
 
 </html>

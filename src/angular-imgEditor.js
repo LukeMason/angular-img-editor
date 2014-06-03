@@ -1,24 +1,25 @@
-(function () {
+(function() {
     'use strict';
-/* 
+    /* 
   Luke Mason 2014
   Angular directives which use Canvas to provide an editable context for images.
   Jcrop, used for cropping http://deepliquid.com/content/Jcrop.html
 */
 
-/*Convert a file in the scope into an img src data attribute*/
+    /*Convert a file in the scope into an img src data attribute*/
     angular.module('imgEditor.directives', [])
         .directive('imgData', [
-            function () {
+
+            function() {
                 return {
                     restrict: 'A',
-                    link: function (scope, element, attributes) {
+                    link: function(scope, element, attributes) {
                         var imgData = scope.$eval(attributes.imgData);
                         var reader = new FileReader();
-                        reader.onload = function () {
-                            scope.$apply(function () {
+                        reader.onload = function() {
+                            scope.$apply(function() {
                                 var img = new Image();
-                                img.onload = function () {
+                                img.onload = function() {
                                     element.attr('src', img.src);
                                 };
                                 img.src = reader.result;
@@ -30,19 +31,19 @@
                 };
             }
         ])
-/* read a file from a url and convert it to a data src 
+    /* read a file from a url and convert it to a data src 
 (this will only work for CORS images, in non-cors supporting browsers 
 serve images from the same domain as the user is on. */
-    .directive('imgDataFromUri', function () {
+    .directive('imgDataFromUri', function() {
         return {
             restrict: 'A',
-            link: function (scope, element, attributes) {
+            link: function(scope, element, attributes) {
                 // Create an empty canvas element
                 var canvas = document.createElement('canvas');
                 var ctx = canvas.getContext('2d');
 
                 var img = new Image();
-                img.onload = function () {
+                img.onload = function() {
 
                     var cw = canvas.width = img.width;
                     var ch = canvas.height = img.height;
@@ -53,8 +54,8 @@ serve images from the same domain as the user is on. */
                     loadedImgData.src = dataURL;
                     // $(element).css('width', img.width + 'px');
                     // $(element).css('height', img.height + 'px');
-                    var crop = scope.model.crop(scope) ;
-                    if ( crop && crop.length > 0) {
+                    var crop = scope.model.crop(scope);
+                    if (crop && crop.length > 0) {
                         //apply the crop programatically pre-load
                         var cropImage = new Image();
                         cropImage.src = dataURL;
@@ -99,15 +100,15 @@ serve images from the same domain as the user is on. */
                     if (scope.model.rotation(scope)) {
                         //apply any rotation next
                         var angle = scope.model.rotation(scope);
-                        while (angle<0){
-                            angle+= 360;
+                        while (angle < 0) {
+                            angle += 360;
                         }
-                          var rotations = (angle / 90) % 4;
-                          var rotateImage = new Image();
-                          rotateImage.src = dataURL;
-                          //it would be better to do the rotation in one batch,
-                          //but this will work for now. TODO
-                          for (var i=0;i<rotations;i++) {
+                        var rotations = (angle / 90) % 4;
+                        var rotateImage = new Image();
+                        rotateImage.src = dataURL;
+                        //it would be better to do the rotation in one batch,
+                        //but this will work for now. TODO
+                        for (var i = 0; i < rotations; i++) {
                             canvas.width = ch;
                             canvas.height = cw;
                             cw = canvas.width;
@@ -117,14 +118,14 @@ serve images from the same domain as the user is on. */
                             ctx.translate(cw, ch / cw);
                             ctx.rotate(Math.PI / 2);
                             // draw the previows image, now rotated
-                            ctx.drawImage(rotateImage, 0, 0);               
+                            ctx.drawImage(rotateImage, 0, 0);
                             ctx.restore();
                             rotateImage.src = canvas.toDataURL();
-                          }
-                          // clear the temporary image
-                          rotateImage = null;
-                          //save 
-                          dataURL = canvas.toDataURL();
+                        }
+                        // clear the temporary image
+                        rotateImage = null;
+                        //save 
+                        dataURL = canvas.toDataURL();
                     }
                     scope.$broadcast('loadedImg', loadedImgData, dataURL);
                     element.attr('src', dataURL);
@@ -134,7 +135,7 @@ serve images from the same domain as the user is on. */
 
 
                 img.crossOrigin = '';
-                attributes.$observe('imgDataFromUri', function (val) {
+                attributes.$observe('imgDataFromUri', function(val) {
                     img.src = val;
                 });
             }
@@ -142,14 +143,14 @@ serve images from the same domain as the user is on. */
     })
         .directive('imgThumb', [
 
-            function () {
+            function() {
                 return {
                     restrict: 'A',
-                    link: function (scope, element, attributes) {
-                        scope.$on('loadedImg', function (e, img, imgSRC) {
+                    link: function(scope, element, attributes) {
+                        scope.$on('loadedImg', function(e, img, imgSRC) {
                             element.attr('src', imgSRC);
                         });
-                        scope.$on('update', function (e, imgSRC) {
+                        scope.$on('update', function(e, imgSRC) {
                             element.attr('src', imgSRC);
                         });
                     }
@@ -157,10 +158,10 @@ serve images from the same domain as the user is on. */
             }
         ])
     /* add listeners for 'crop', 'rotate' and 'rest' brodcasts */
-    .directive('imgEditable', function ($parse) {
+    .directive('imgEditable', function($parse) {
         return {
             restrict: 'A',
-            link: function (scope, element, attributes) {
+            link: function(scope, element, attributes) {
                 var jcrop_api;
                 var croppedImage; //this will be used to support cancel of crop.
                 var fullSize = new Image();
@@ -168,8 +169,14 @@ serve images from the same domain as the user is on. */
                 scope.model = {};
                 scope.model.crop = $parse(attributes.crop);
                 scope.model.rotation = $parse(attributes.rotation);
-                scope.model.trueSize= $parse(attributes.trueSize);
-
+                scope.model.trueSize = $parse(attributes.trueSize);
+                scope.model.base64 = $parse(attributes.base64);
+                scope.$on('loadedImg', function(e, img, base64) {
+                    scope.model.base64.assign(scope, base64);
+                });
+                scope.$on('update', function(e, base64) {
+                    scope.model.base64.assign(scope, base64);
+                });
                 if (!scope.crop) {
                     scope.crop = false;
                 }
@@ -179,14 +186,14 @@ serve images from the same domain as the user is on. */
                 if (element.attr('src') && element.attr('src').length > 1) {
                     fullSize.src = element.attr('src');
                 } //load the src if it was already on the dom
-                scope.$on('loadedImg', function (e, img, imgSRC) {
+                scope.$on('loadedImg', function(e, img, imgSRC) {
                     //if we are using one of the helpers to load img data 
                     //this will load the full sized as original and cropped into the view
                     fullSize.src = imgSRC;
                     orig.src = img.src;
                 });
                 //listen for actions
-                scope.$on('crop', function () {
+                scope.$on('crop', function() {
                     scope.cropping = true;
                     croppedImage = new Image();
                     croppedImage.src = element.attr('src');
@@ -195,7 +202,7 @@ serve images from the same domain as the user is on. */
                     element.attr('src', fullSize.src);
 
                     //Init Jcrop with old selection if one exists
-                    console.log([fullSize.width,fullSize.height]);
+                    console.log([fullSize.width, fullSize.height]);
                     if (scope.crop) {
                         var pt1 = rotatePoint(scope.crop.x, scope.crop.y,
                             orig.width, orig.height, scope.rotation);
@@ -203,21 +210,21 @@ serve images from the same domain as the user is on. */
                             orig.width, orig.height, scope.rotation);
                         var selectedInit = [pt1.x, pt1.y, pt2.x, pt2.y];
                         $(element).Jcrop({
-                            'trueSize': [fullSize.width,fullSize.height],
+                            'trueSize': [fullSize.width, fullSize.height],
                             'setSelect': selectedInit
-                        }, function () {
+                        }, function() {
                             jcrop_api = this;
                         });
                     } else {
                         $(element).Jcrop({
-                            'trueSize': [fullSize.width,fullSize.height],
-                        }, function () {
+                            'trueSize': [fullSize.width, fullSize.height],
+                        }, function() {
                             jcrop_api = this;
                         });
                     }
                 });
 
-                scope.$on('reset', function () {
+                scope.$on('reset', function() {
                     scope.crop = false;
                     scope.rotation = 0;
                     reset();
@@ -225,7 +232,7 @@ serve images from the same domain as the user is on. */
                     scope.$broadcast('update', orig.src);
                 });
 
-                scope.$on('save', function () {
+                scope.$on('save', function() {
                     if (scope.cropping) {
                         croppedImage = null;
                         //main crop function.
@@ -246,7 +253,6 @@ serve images from the same domain as the user is on. */
                         };
                         //save the crop in origin cords
                         scope.model.crop.assign(scope, scope.crop);
-
                         //remove jcrop applied width and height for native sizing
                         $(element).css('width', '');
                         $(element).css('height', '');
@@ -257,7 +263,7 @@ serve images from the same domain as the user is on. */
                     }
                 });
 
-                scope.$on('cancel', function () {
+                scope.$on('cancel', function() {
                     if (scope.cropping) {
                         scope.cropping = false;
                         element.attr('src', croppedImage.src);
@@ -270,7 +276,7 @@ serve images from the same domain as the user is on. */
                 });
 
                 //rotate
-                scope.$on('rotate', function () {
+                scope.$on('rotate', function() {
                     scope.rotation = (scope.rotation + 90) % 360;
                     //update the model
                     scope.model.rotation.assign(scope, scope.rotation);
@@ -287,9 +293,8 @@ serve images from the same domain as the user is on. */
                 }
 
                 function doRotate() {
-
                     var img = new Image();
-                    img.onload = function () {
+                    img.onload = function() {
                         var myImage;
                         var rotating = false;
                         var canvas = document.createElement('canvas');
@@ -305,7 +310,7 @@ serve images from the same domain as the user is on. */
                             // store current data to an image
                             myImage = new Image();
                             myImage.src = canvas.toDataURL();
-                            myImage.onload = function () {
+                            myImage.onload = function() {
                                 // reset the canvas with new dimensions
                                 canvas.width = ch;
                                 canvas.height = cw;
@@ -334,7 +339,7 @@ serve images from the same domain as the user is on. */
                 function rotateFullSize() {
                     //silently rotate the full size image in the background
                     var img2 = new Image();
-                    img2.onload = function () {
+                    img2.onload = function() {
                         var myImage2, rotating2 = false;
                         var canvas2 = document.createElement('canvas');
                         var ctx2 = canvas2.getContext('2d');
@@ -349,7 +354,7 @@ serve images from the same domain as the user is on. */
                             // store current data to an image
                             myImage2 = new Image();
                             myImage2.src = canvas2.toDataURL();
-                            myImage2.onload = function () {
+                            myImage2.onload = function() {
                                 // reset the canvas with new dimensions
                                 canvas2.width = ch2;
                                 canvas2.height = cw2;
