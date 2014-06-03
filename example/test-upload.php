@@ -2,7 +2,7 @@
     // requires php5
     define('UPLOAD_DIR', '../images/');
     $img = $_POST['base64'];
-    $name = $_POST['base64'];
+    $name = $_POST['name'];
     $img = str_replace('data:image/jpeg;base64,', '', $img);
     $img = str_replace(' ', '+', $img);
     $data = base64_decode($img);
