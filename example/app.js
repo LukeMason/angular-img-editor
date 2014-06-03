@@ -41,7 +41,7 @@
          // Creates a uploader
          var uploader = $scope.uploader = $fileUploader.create({
              scope: $scope,
-             url: '/test-upload.php'
+             url: 'test-upload.php'
          });
 
 
