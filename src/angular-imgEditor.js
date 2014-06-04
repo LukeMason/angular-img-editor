@@ -49,7 +49,7 @@ serve images from the same domain as the user is on. */
                     var ch = canvas.height = img.height;
                     // Copy the image contents to the canvas
                     ctx.drawImage(img, 0, 0);
-                    var dataURL = canvas.toDataURL('image/png');
+                    var dataURL = canvas.toDataURL();
                     var loadedImgData = new Image();
                     loadedImgData.src = dataURL;
                     // $(element).css('width', img.width + 'px');
