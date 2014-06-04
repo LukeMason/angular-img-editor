@@ -49,7 +49,7 @@ serve images from the same domain as the user is on. */
                     var ch = canvas.height = img.height;
                     // Copy the image contents to the canvas
                     ctx.drawImage(img, 0, 0);
-                    var dataURL = canvas.toDataURL();
+                    var dataURL = canvas.toDataURL('image/jpeg',1);
                     var loadedImgData = new Image();
                     loadedImgData.src = dataURL;
                     // $(element).css('width', img.width + 'px');
@@ -95,7 +95,7 @@ serve images from the same domain as the user is on. */
                         ctx.drawImage(canvas2, -offX, -offY);
                         //clear temp variables
                         cropImage = canvas1 = canvas2 = ctx1 = ctx2 = offY = offX = null;
-                        dataURL = canvas.toDataURL();
+                        dataURL = canvas.toDataURL('image/jpeg',1);
                     }
                     if (scope.model.rotation(scope)) {
                         //apply any rotation next
@@ -120,12 +120,12 @@ serve images from the same domain as the user is on. */
                             // draw the previows image, now rotated
                             ctx.drawImage(rotateImage, 0, 0);
                             ctx.restore();
-                            rotateImage.src = canvas.toDataURL();
+                            rotateImage.src = canvas.toDataURL('image/jpeg',1);
                         }
                         // clear the temporary image
                         rotateImage = null;
                         //save 
-                        dataURL = canvas.toDataURL();
+                        dataURL = canvas.toDataURL('image/jpeg',1);
                     }
                     scope.$broadcast('loadedImg', loadedImgData, dataURL);
                     element.attr('src', dataURL);
@@ -309,7 +309,7 @@ serve images from the same domain as the user is on. */
                             rotating = true;
                             // store current data to an image
                             myImage = new Image();
-                            myImage.src = canvas.toDataURL();
+                            myImage.src = canvas.toDataURL('image/jpeg',1);
                             myImage.onload = function() {
                                 // reset the canvas with new dimensions
                                 canvas.width = ch;
@@ -326,8 +326,8 @@ serve images from the same domain as the user is on. */
                                 // clear the temporary image
                                 myImage = null;
                                 rotating = false;
-                                element.attr('src', canvas.toDataURL());
-                                scope.$broadcast('update', canvas.toDataURL());
+                                element.attr('src', canvas.toDataURL('image/jpeg',1));
+                                scope.$broadcast('update', canvas.toDataURL('image/jpeg',1));
                                 canvas = null;
                             };
                         }
@@ -353,7 +353,7 @@ serve images from the same domain as the user is on. */
                             rotating2 = true;
                             // store current data to an image
                             myImage2 = new Image();
-                            myImage2.src = canvas2.toDataURL();
+                            myImage2.src = canvas2.toDataURL('image/jpeg',1);
                             myImage2.onload = function() {
                                 // reset the canvas with new dimensions
                                 canvas2.width = ch2;
@@ -370,7 +370,7 @@ serve images from the same domain as the user is on. */
                                 // clear the temporary image
                                 myImage2 = null;
                                 rotating2 = false;
-                                var newImgSrc = canvas2.toDataURL();
+                                var newImgSrc = canvas2.toDataURL('image/jpeg',1);
                                 canvas2 = null;
                                 fullSize.src = newImgSrc;
                             };
@@ -416,10 +416,10 @@ serve images from the same domain as the user is on. */
                     cw = canvas.width;
                     ch = canvas.height;
                     ctx.drawImage(canvas2, -offX, -offY);
-                    element.attr('src', canvas.toDataURL());
+                    element.attr('src', canvas.toDataURL('image/jpeg',1));
                     // $(element).css('width', selected.w + 'px');
                     // $(element).css('height', selected.h + 'px');
-                    scope.$broadcast('update', canvas.toDataURL());
+                    scope.$broadcast('update', canvas.toDataURL('image/jpeg',1));
                     cropImage = canvas = ctx = cw = ch = selected =
                         ctx1 = ctx2 = canvas1 = canvas2 = rectBB = offX = offY = null;
                 } // end crop using canvas.
