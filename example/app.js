@@ -7,7 +7,7 @@
  ]);
 
  angular.module('myApp.controllers', ['angularFileUpload'])
-     .controller('myController', function($scope, $fileUploader, $http, $sce) {
+     .controller('myController', function($scope, FileUploader, $http, $sce) {
          $scope.uploads = [{
              'url': 'https://scontent-a-iad.xx.fbcdn.net/hphotos-prn2/t1.0-9/1151081_10201852161326618_2087299939_n.jpg',
              'name': 'Test From Server',
@@ -39,7 +39,7 @@
 
          /* BEGIN: angular file uploader controller*/
          // Creates a uploader
-         var uploader = $scope.uploader = $fileUploader.create({
+         var uploader = $scope.uploader = new FileUploader({
              scope: $scope,
              url: 'test-upload.php'
          });
@@ -101,49 +101,50 @@
 
 
          // REGISTER HANDLERS
-         uploader.bind('afteraddingfile', function(event, item) {
+         uploader.onAfteraddingfile = function(event, item) {
              console.info('After adding a file', item);
-         });
+         };
 
-         uploader.bind('whenaddingfilefailed', function(event, item) {
+         uploader.onWhenaddingfilefailed = function(event, item) {
              console.info('When adding a file failed', item);
-         });
+         };
 
-         uploader.bind('afteraddingall', function(event, items) {
+         uploader.onAfteraddingall = function(event, items) {
              console.info('After adding all files', items);
-         });
+         };
 
-         uploader.bind('beforeupload', function(event, item) {
+         uploader.onBeforeupload = function(event, item) {
              console.info('Before upload', item);
-         });
+         };
 
-         uploader.bind('progress', function(event, item, progress) {
+         uploader.onProgress = function(event, item, progress) {
+
              console.info('Progress: ' + progress, item);
-         });
+         };
 
-         uploader.bind('success', function(event, xhr, item, response) {
+         uploader.onSuccess = function(event, xhr, item, response) {
              console.info('Success', xhr, item, response);
-         });
+         };
 
-         uploader.bind('cancel', function(event, xhr, item) {
+         uploader.onCancel = function(event, xhr, item) {
              console.info('Cancel', xhr, item);
-         });
+         };
 
-         uploader.bind('error', function(event, xhr, item, response) {
+         uploader.onError = function(event, xhr, item, response) {
              console.info('Error', xhr, item, response);
-         });
+         };
 
-         uploader.bind('complete', function(event, xhr, item, response) {
+         uploader.onComplete = function(event, xhr, item, response) {
              console.info('Complete', xhr, item, response);
-         });
+         };
 
-         uploader.bind('progressall', function(event, progress) {
+         uploader.onProgressall = function(event, progress) {
              console.info('Total progress: ' + progress);
-         });
+         };
 
-         uploader.bind('completeall', function(event, items) {
+         uploader.onCompleteall = function(event, items) {
              console.info('Complete all', items);
-         });
+         };
 
          /* END: angular file uploader controller*/
 
