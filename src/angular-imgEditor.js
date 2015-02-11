@@ -170,7 +170,9 @@ serve images from the same domain as the user is on. */
                 scope.model.crop = $parse(attributes.crop);
                 scope.model.rotation = $parse(attributes.rotation);
                 scope.model.trueSize = $parse(attributes.trueSize);
-                scope.model.base64 = $parse(attributes.base64);
+                scope.model.base64   = $parse(attributes.base64);
+                scope.model.ratio    = parseFloat(attributes.ratio);
+
                 scope.$on('loadedImg', function(e, img, base64) {
                     scope.model.base64.assign(scope, base64);
                 });
@@ -211,13 +213,15 @@ serve images from the same domain as the user is on. */
                         var selectedInit = [pt1.x, pt1.y, pt2.x, pt2.y];
                         $(element).Jcrop({
                             'trueSize': [fullSize.width, fullSize.height],
-                            'setSelect': selectedInit
+                            'setSelect': selectedInit,
+                            'aspectRatio' : scope.model.ratio
                         }, function() {
                             jcrop_api = this;
                         });
                     } else {
                         $(element).Jcrop({
                             'trueSize': [fullSize.width, fullSize.height],
+                            'aspectRatio' : scope.model.ratio
                         }, function() {
                             jcrop_api = this;
                         });
